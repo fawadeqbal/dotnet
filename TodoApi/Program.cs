@@ -1,15 +1,19 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using TodoApi.Context;
 using TodoApi.Models;
 using TodoApi.Repositories;
-using TodoApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Explicitly set the connection string and database name
-var connectionString = "mongodb+srv://fawadeqbal00:fawad1@cluster0.zpil5a7.mongodb.net/";
-var databaseName = "library";
+var configuration = builder.Configuration;
 
-// Add services to the container
+var mongoDbSettings = configuration.GetSection("MongoDbSettings");
+var connectionString = mongoDbSettings["ConnectionStrings"];
+var databaseName = mongoDbSettings["DatabaseName"];
+
 builder.Services.AddSingleton(sp => new MongoDbContext(connectionString, databaseName));
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IBookService, BookService>();
@@ -20,7 +24,6 @@ app.MapGet("/", () => new { Message = "Welcome to Book API!" });
 
 app.MapPost("/addBook", (Book book, IBookService bookService) =>
 {
-
     var res = bookService.AddBook(book);
     return Results.Ok(res);
 });

@@ -26,9 +26,9 @@ namespace TodoApi.Repositories
         }
 
         public Book GetBookById(string id)
-{
-    return _books.Find(book => book._id.ToString() == id).FirstOrDefault();
-}
+        {
+            return _books.Find(book => book._id.ToString() == id).FirstOrDefault();
+        }   
 
     }
 }
